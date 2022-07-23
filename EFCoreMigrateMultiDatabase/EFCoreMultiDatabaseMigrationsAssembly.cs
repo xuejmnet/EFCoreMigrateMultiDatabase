@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using EFCoreMigrateMultiDatabase.MigrationsAssemblies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -12,6 +13,13 @@ using Microsoft.EntityFrameworkCore.Migrations.Internal;
 
 namespace EFCoreMigrateMultiDatabase
 {
+    //public class mys : IDesignTimeServices
+    //{
+    //    public void ConfigureDesignTimeServices(IServiceCollection serviceCollection)
+    //    {
+    //        serviceCollection.AddSingleton<IMigrationsAssembly, EFCoreMultiDatabaseMigrationsAssembly>();
+    //    }
+    //}
     public class EFCoreMultiDatabaseMigrationsAssembly: IMigrationsAssembly
     {
         private readonly string _migrationNamespace;

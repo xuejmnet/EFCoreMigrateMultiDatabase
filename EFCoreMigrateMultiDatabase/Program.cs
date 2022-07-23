@@ -26,7 +26,7 @@ builder.Services.AddDbContext<MyDbContext>(options =>
         "MySql" => options.UseMySql("server=127.0.0.1;port=3306;database=DBMultiDataBase;userid=root;password=L6yBtV6qNENrwBy7;", new MySqlServerVersion(new Version()))
             .UseMigrationNamespace(new MySqlMigrationNamespace()),
         "SqlServer" => options.UseSqlServer("Data Source=localhost;Initial Catalog=DBMultiDataBase;Integrated Security=True;")
-        .UseMigrationNamespace(new MySqlMigrationNamespace()),
+        .UseMigrationNamespace(new SqlServerMigrationNamespace()),
         _ => throw new Exception($"Unsupported provider: {provider}")
     };
 });
