@@ -13,16 +13,9 @@ using Microsoft.EntityFrameworkCore.Migrations.Internal;
 
 namespace EFCoreMigrateMultiDatabase
 {
-    //public class mys : IDesignTimeServices
-    //{
-    //    public void ConfigureDesignTimeServices(IServiceCollection serviceCollection)
-    //    {
-    //        serviceCollection.AddSingleton<IMigrationsAssembly, EFCoreMultiDatabaseMigrationsAssembly>();
-    //    }
-    //}
     public class EFCoreMultiDatabaseMigrationsAssembly: IMigrationsAssembly
     {
-        private readonly string _migrationNamespace;
+        public  string MigrationNamespace { get; }
         private readonly IMigrationsIdGenerator _idGenerator;
         private readonly IDiagnosticsLogger<DbLoggerCategory.Migrations> _logger;
         private IReadOnlyDictionary<string, TypeInfo>? _migrations;
@@ -50,7 +43,7 @@ namespace EFCoreMigrateMultiDatabase
                 ? _contextType.Assembly
                 : Assembly.Load(new AssemblyName(assemblyName));
 
-            _migrationNamespace = migrationNamespace.GetNamespace();
+            MigrationNamespace = migrationNamespace.GetNamespace();
             _idGenerator = idGenerator;
             _logger = logger;
         }
@@ -71,7 +64,7 @@ namespace EFCoreMigrateMultiDatabase
                     var items
                         = from t in Assembly.GetConstructibleTypes()
                           where t.IsSubclassOf(typeof(Migration))&& print(t)
-                                && t.Namespace.Equals(_migrationNamespace)
+                                && t.Namespace.Equals(MigrationNamespace)
                               && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
                           let id = t.GetCustomAttribute<MigrationAttribute>()?.Id
                           orderby id
@@ -98,7 +91,7 @@ namespace EFCoreMigrateMultiDatabase
 
         private bool print(TypeInfo t)
         {
-            Console.WriteLine(_migrationNamespace);
+            Console.WriteLine(MigrationNamespace);
             Console.WriteLine(t.Namespace);
             return true;
         }
@@ -120,7 +113,7 @@ namespace EFCoreMigrateMultiDatabase
                 Console.WriteLine("_modelSnapshot:null");
                 _modelSnapshot = (from t in Assembly.GetConstructibleTypes()
                         where t.IsSubclassOf(typeof(ModelSnapshot)) && print(t)
-                                                                    && _migrationNamespace.Equals(t?.Namespace)
+                                                                    && MigrationNamespace.Equals(t?.Namespace)
                                                                     && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
                         select (ModelSnapshot)Activator.CreateInstance(t.AsType())!)
                     .FirstOrDefault();

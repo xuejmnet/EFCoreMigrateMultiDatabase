@@ -1,6 +1,7 @@
 using EFCoreMigrateMultiDatabase;
 using EFCoreMigrateMultiDatabase.MigrationsAssemblies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +16,11 @@ builder.Services.AddSwaggerGen();
 //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=vs
 
 var provider = builder.Configuration.GetValue("Provider", "UnKnown");
-
+//builder.Services.AddEntityFrameworkDesignTimeServices();
 //Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\SqlServer -Args "--provider SqlServer"
 //Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\MySql -Args "--provider MySql"
+//update-database -Args "--provider MySql"
+//update-database -Args "--provider SqlServer"
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
     options.ReplaceService<IMigrationsAssembly, EFCoreMultiDatabaseMigrationsAssembly>();
