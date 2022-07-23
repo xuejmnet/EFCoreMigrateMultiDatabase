@@ -1,5 +1,7 @@
 using EFCoreMigrateMultiDatabase;
+using EFCoreMigrateMultiDatabase.MigrationsAssemblies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +16,17 @@ builder.Services.AddSwaggerGen();
 
 var provider = builder.Configuration.GetValue("Provider", "UnKnown");
 
-//Add-Migration InitialCreate -Context BlogContext -OutputDir Migrations\SqlServer -Args "--provider SqlServer"
-//Add-Migration InitialCreate -Context BlogContext -OutputDir Migrations\MySql -Args "--provider MySql"
+//Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\SqlServer -Args "--provider SqlServer"
+//Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\MySql -Args "--provider MySql"
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
+    options.ReplaceService<IMigrationsAssembly, EFCoreMultiDatabaseMigrationsAssembly>();
     _ = provider switch
     {
-        "MySql" => options.UseMySql("", new MySqlServerVersion(new Version())),
-        "SqlServer" => options.UseSqlServer(""),
+        "MySql" => options.UseMySql("server=127.0.0.1;port=3306;database=DBMultiDataBase;userid=root;password=L6yBtV6qNENrwBy7;", new MySqlServerVersion(new Version()))
+            .UseMigrationNamespace(new MySqlMigrationNamespace()),
+        "SqlServer" => options.UseSqlServer("Data Source=localhost;Initial Catalog=DBMultiDataBase;Integrated Security=True;")
+        .UseMigrationNamespace(new MySqlMigrationNamespace()),
         _ => throw new Exception($"Unsupported provider: {provider}")
     };
 });
