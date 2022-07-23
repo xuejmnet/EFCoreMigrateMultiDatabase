@@ -63,13 +63,12 @@ namespace EFCoreMigrateMultiDatabase
                     var result = new SortedList<string, TypeInfo>();
                     var items
                         = from t in Assembly.GetConstructibleTypes()
-                          where t.IsSubclassOf(typeof(Migration))&& print(t)
+                          where t.IsSubclassOf(typeof(Migration))
                                 && t.Namespace.Equals(MigrationNamespace)
                               && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
                           let id = t.GetCustomAttribute<MigrationAttribute>()?.Id
                           orderby id
                           select (id, t);
-                    Console.WriteLine("Migrations:" + items.Count());
                     foreach (var (id, t) in items)
                     {
                         if (id == null)
@@ -89,13 +88,6 @@ namespace EFCoreMigrateMultiDatabase
             }
         }
 
-        private bool print(TypeInfo t)
-        {
-            Console.WriteLine(MigrationNamespace);
-            Console.WriteLine(t.Namespace);
-            return true;
-        }
-
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
         ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
@@ -112,7 +104,7 @@ namespace EFCoreMigrateMultiDatabase
             {
                 Console.WriteLine("_modelSnapshot:null");
                 _modelSnapshot = (from t in Assembly.GetConstructibleTypes()
-                        where t.IsSubclassOf(typeof(ModelSnapshot)) && print(t)
+                        where t.IsSubclassOf(typeof(ModelSnapshot))
                                                                     && MigrationNamespace.Equals(t?.Namespace)
                                                                     && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
                         select (ModelSnapshot)Activator.CreateInstance(t.AsType())!)

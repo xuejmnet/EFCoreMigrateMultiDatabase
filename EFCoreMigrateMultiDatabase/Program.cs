@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//var combine = Path.Combine(@"Migrations\SqlServer", "MyDbContextModelSnapshot.cs");
+//var enumerateFiles = Directory.EnumerateFiles(@"D:\githubs\EFCoreMigrateMultiDatabase\EFCoreMigrateMultiDatabase", @"MyDbContextModelSnapshot.cs", SearchOption.AllDirectories).Where(o=>o.EndsWith(combine));
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -16,7 +17,6 @@ builder.Services.AddSwaggerGen();
 //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=vs
 
 var provider = builder.Configuration.GetValue("Provider", "UnKnown");
-//builder.Services.AddEntityFrameworkDesignTimeServices();
 //Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\SqlServer -Args "--provider SqlServer"
 //Add-Migration InitialCreate -Context MyDbContext -OutputDir Migrations\MySql -Args "--provider MySql"
 //update-database -Args "--provider MySql"
