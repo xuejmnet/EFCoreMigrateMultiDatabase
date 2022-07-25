@@ -95,25 +95,12 @@ namespace EFCoreMigrateMultiDatabase
         ///     doing so can result in application failures when updating to a new Entity Framework Core release.
         /// </summary>
         public virtual ModelSnapshot? ModelSnapshot
-            => GetMod();
-
-        private ModelSnapshot GetMod()
-        {
-            Console.WriteLine("_modelSnapshot:"+ _modelSnapshot);
-            if (_modelSnapshot == null)
-            {
-                Console.WriteLine("_modelSnapshot:null");
-                _modelSnapshot = (from t in Assembly.GetConstructibleTypes()
-                        where t.IsSubclassOf(typeof(ModelSnapshot))
-                                                                    && MigrationNamespace.Equals(t?.Namespace)
-                                                                    && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
-                        select (ModelSnapshot)Activator.CreateInstance(t.AsType())!)
+            =>_modelSnapshot ??= (from t in Assembly.GetConstructibleTypes()
+                                        where t.IsSubclassOf(typeof(ModelSnapshot))
+                                                                                    && MigrationNamespace.Equals(t?.Namespace)
+                                                                                    && t.GetCustomAttribute<DbContextAttribute>()?.ContextType == _contextType
+                                        select (ModelSnapshot)Activator.CreateInstance(t.AsType())!)
                     .FirstOrDefault();
-
-                Console.WriteLine("_modelSnapshot:" + _modelSnapshot);
-            }
-            return _modelSnapshot;
-        }
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
